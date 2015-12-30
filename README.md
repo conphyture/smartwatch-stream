@@ -3,3 +3,5 @@ Using BLE connectivity from smartwatch (and other compatible devices) to stream 
 Uses [bluepy](https://github.com/IanHarvey/bluepy). Clone this repo with the ` --recursive` flag then launch `make` inside `bluepy/bluepy`.
 
 Requires [LSL](https://github.com/sccn/labstreaminglayer): install with `pip install pylsl`.
+
+![Quick test with mio alpha 2](mio_rox.png)
