@@ -1,7 +1,7 @@
 import binascii
 import struct
 import time
-from bluepy.bluepy.btle import UUID, Peripheral
+from bluepy.bluepy.btle import UUID, Peripheral, DefaultDelegate
 
 # replace with MAC of actual device
 device_mac = "E3:81:6B:4B:C1:99"
@@ -15,9 +15,21 @@ char_uuid = UUID(0x2a37)
 # start HR stream
 notify_start = '0\0\1\0'
 
+class MyDelegate(DefaultDelegate):
+    def __init__(self):
+        DefaultDelegate.__init__(self)
+        print "delegate init"
+        # ... initialise here
+
+    def handleNotification(self, cHandle, data):
+        print "delegate got data"
+        # ... perhaps check cHandle
+        # ... process 'data'
+
 print "connecting to device", device_mac, " in random mode"
 p = Peripheral(device_mac, "random")
 print "...connected"
+p.setDelegate( MyDelegate())
 
 try:
     svc = p.getServiceByUUID( service_uuid )
