@@ -1,5 +1,7 @@
 # credits to code from: https://github.com/IanHarvey/bluepy/issues/53
 
+# TODO: get RR values
+
 from bluepy.bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
 
 import time
@@ -9,7 +11,9 @@ device_mac = "E3:81:6B:4B:C1:99"
 
 class HRM(Peripheral):
     def __init__(self, addr):
+        print "connecting to device", addr, " in random mode"
         Peripheral.__init__(self, addr, addrType=ADDR_TYPE_RANDOM)
+        print "...connected"
 
 if __name__=="__main__":
     cccid = AssignedNumbers.client_characteristic_configuration
@@ -21,10 +25,12 @@ if __name__=="__main__":
         hrm = HRM(device_mac)
 
         service, = [s for s in hrm.getServices() if s.uuid==hrmid]
+        print "Got service"
         ccc, = service.getCharacteristics(forUUID=str(hrmmid))
-
+        print "Got characteristic"
         desc = hrm.getDescriptors(service.hndStart, service.hndEnd)
         d, = [d for d in desc if d.uuid==cccid]
+        print "Got descriptor, writing init sequence"
         hrm.writeCharacteristic(d.handle, '\1\0')
 
         t0=time.time()
@@ -38,5 +44,10 @@ if __name__=="__main__":
 
     finally:
         if hrm:
-            hrm.disconnect()
-            print "disconnected"
+            # way get ""
+            try:
+                hrm.disconnect()
+                print "disconnected"
+            except:
+                # may get "ValueError: need more than 1 value to unpack"??
+                print "error while disconnecting"
