@@ -3,11 +3,23 @@
 # TODO: get RR values
 
 from bluepy.bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
+from pylsl import StreamInfo, StreamOutlet
 
 import time
 
 # replace with MAC of actual device
 device_mac = "E3:81:6B:4B:C1:99"
+
+# ugly global variable go retrieve value from delegate
+last_bpm = 0
+
+# will likely interpolate data if greater than 1Hz
+samplingrate = 10
+
+# create LSL StreamOutlet
+print "creating LSL outlet, sampling rate:", samplingrate, "Hz"
+info = StreamInfo('hr','hr',1,samplingrate,'float32','conphyturehr1337')
+outlet = StreamOutlet(info)
 
 class HRM(Peripheral):
     def __init__(self, addr):
@@ -35,12 +47,15 @@ if __name__=="__main__":
 
         t0=time.time()
         def print_hr(cHandle, data):
+            global last_bpm
             bpm = ord(data[1])
+            last_bpm = bpm
             print bpm,"%.2f"%(time.time()-t0)
         hrm.delegate.handleNotification = print_hr
 
         while True:
-            hrm.waitForNotifications(5.)
+            hrm.waitForNotifications(1./samplingrate)
+            outlet.push_sample([last_bpm])
 
     finally:
         if hrm:
