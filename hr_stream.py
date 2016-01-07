@@ -14,7 +14,7 @@ device_mac = "E3:81:6B:4B:C1:99"
 last_bpm = 0
 
 # will likely interpolate data if greater than 1Hz
-samplingrate = 10
+samplingrate = 16
 
 # create LSL StreamOutlet
 print "creating LSL outlet, sampling rate:", samplingrate, "Hz"
