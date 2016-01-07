@@ -5,10 +5,12 @@
 from bluepy.bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
 from pylsl import StreamInfo, StreamOutlet
 
-import time, struct
+import time, struct, argparse
 
-# replace with MAC of actual device
-device_mac = "E3:81:6B:4B:C1:99"
+# retrieve MAC address
+parser = argparse.ArgumentParser(description='Stream heart rate of bluetooth BLE compatible devices using LSL.')
+parser.add_argument("device_mac", help="MAC address of the MAC device")
+args = parser.parse_args()
 
 # ugly global variable go retrieve value from delegate
 last_bpm = 0
@@ -39,7 +41,7 @@ if __name__=="__main__":
 
     hrm = None
     try:
-        hrm = HRM(device_mac)
+        hrm = HRM(args.device_mac)
 
         service, = [s for s in hrm.getServices() if s.uuid==hrmid]
         print "Got service"
