@@ -1,17 +1,18 @@
 # credits to code from: https://github.com/IanHarvey/bluepy/issues/53
 
-# TODO: get RR values
+# TODO: get all RR values?
 
 from bluepy.bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
 from pylsl import StreamInfo, StreamOutlet
 
-import time
+import time, struct
 
 # replace with MAC of actual device
 device_mac = "E3:81:6B:4B:C1:99"
 
 # ugly global variable go retrieve value from delegate
 last_bpm = 0
+last_rr = 0
 
 # will likely interpolate data if greater than 1Hz
 samplingrate = 16
@@ -47,10 +48,20 @@ if __name__=="__main__":
 
         t0=time.time()
         def print_hr(cHandle, data):
-            global last_bpm
+            global last_bpm, last_rr
             bpm = ord(data[1])
             last_bpm = bpm
-            print bpm,"%.2f"%(time.time()-t0)
+            print "BPM:", bpm, "- time: %.2f"%(time.time()-t0),
+            # if retrieved data is longer, we got RR interval, take the first
+            if len(data) >= 4:
+                # UINT16 format
+                rr = struct.unpack('H', data[2:4])[0]
+                # units of RR interval is 1/1024 sec
+                rr = rr/1024.
+                last_rr = rr
+                print "- RR:", rr,
+            print ""
+
         hrm.delegate.handleNotification = print_hr
 
         while True:
