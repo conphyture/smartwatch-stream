@@ -18,9 +18,13 @@ last_rr = 0
 samplingrate = 16
 
 # create LSL StreamOutlet
-print "creating LSL outlet, sampling rate:", samplingrate, "Hz"
-info = StreamInfo('hr','hr',1,samplingrate,'float32','conphyturehr1337')
-outlet = StreamOutlet(info)
+print "creating LSL outlet for heart-rate, sampling rate:", samplingrate, "Hz"
+info_hr = StreamInfo('hr','hr',1,samplingrate,'float32','conphyturehr1337')
+outlet_hr = StreamOutlet(info_hr)
+
+print "creating LSL outlet for RR intervals, sampling rate:", samplingrate, "Hz"
+info_rr = StreamInfo('rr','rr',1,samplingrate,'float32','conphyturehr1337')
+outlet_rr = StreamOutlet(info_rr)
 
 class HRM(Peripheral):
     def __init__(self, addr):
@@ -66,7 +70,8 @@ if __name__=="__main__":
 
         while True:
             hrm.waitForNotifications(1./samplingrate)
-            outlet.push_sample([last_bpm])
+            outlet_hr.push_sample([last_bpm])
+            outlet_rr.push_sample([last_rr])
 
     finally:
         if hrm:
