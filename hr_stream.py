@@ -10,6 +10,7 @@ import time, struct, argparse
 # retrieve MAC address
 parser = argparse.ArgumentParser(description='Stream heart rate of bluetooth BLE compatible devices using LSL.')
 parser.add_argument("device_mac", help="MAC address of the MAC device")
+parser.add_argument("-id", "--id", help="Identifier for the device (default: 1), . Should be unique on the network", default=1, type=int)
 args = parser.parse_args()
 
 # ugly global variable go retrieve value from delegate
@@ -19,13 +20,19 @@ last_rr = 0
 # will likely interpolate data if greater than 1Hz
 samplingrate = 16
 
+# setting type for smartwatch
+lsl_type = "watch_" + str(args.id)
+lsl_id =  "conphyturehr1337_" + str(args.id)
+
+print "creating LSL of types: ", lsl_type
+
 # create LSL StreamOutlet
 print "creating LSL outlet for heart-rate, sampling rate:", samplingrate, "Hz"
-info_hr = StreamInfo('hr','hr',1,samplingrate,'float32','conphyturehr1337')
+info_hr = StreamInfo('hr',lsl_type, 1, samplingrate, 'float32', lsl_id + "_hr")
 outlet_hr = StreamOutlet(info_hr)
 
 print "creating LSL outlet for RR intervals, sampling rate:", samplingrate, "Hz"
-info_rr = StreamInfo('rr','rr',1,samplingrate,'float32','conphyturehr1337')
+info_rr = StreamInfo('rr','rr',1,samplingrate,'float32', lsl_id + "_rr")
 outlet_rr = StreamOutlet(info_rr)
 
 class HRM(Peripheral):
