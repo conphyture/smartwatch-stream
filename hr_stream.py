@@ -106,9 +106,9 @@ class HRM():
         NB: might try to connect and block for few seconds.
         """
     
-        # nothing to if not connected
+        # nothing to if not connected -- but still blocking with samplingrate
         if not self.isActive():
-            time.sleep(0.01)
+            time.sleep(1./self.israte)
     
         if self.active:
           # FIXME: should detect disconnect
