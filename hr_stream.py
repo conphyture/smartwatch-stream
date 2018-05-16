@@ -2,7 +2,7 @@
 
 # TODO: get all RR values?
 
-from bluepy.bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
+from bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
 from pylsl import StreamInfo, StreamOutlet
 
 import time, timeit, struct, argparse, thread
