@@ -127,7 +127,7 @@ class HRM():
             
     def isActive(self):
         """ getter for state of the connection + try to reco periodically if necessary. """
-        if abs(self.last_con-timeit.default_timer())>=self.reco_timeout:
+        if self.active == False and abs(self.last_con-timeit.default_timer())>=self.reco_timeout:
           self.connect() 
         
         return self.active
