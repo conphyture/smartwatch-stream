@@ -3,8 +3,6 @@
 # TODO: get all RR values?
 
 from bluepy.btle import Peripheral, ADDR_TYPE_RANDOM, AssignedNumbers
-from pylsl import StreamInfo, StreamOutlet
-
 import time, timeit, struct, argparse, thread
 
 class HRM():
@@ -146,6 +144,7 @@ class HRM():
 
 
 if __name__=="__main__":
+    from pylsl import StreamInfo, StreamOutlet
     # retrieve MAC address
     parser = argparse.ArgumentParser(description='Stream heart rate of bluetooth BLE compatible devices using LSL.')
     parser.add_argument("device_mac", help="MAC address of the MAC device")
